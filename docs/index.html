@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perto · chat sem internet por Bluetooth</title>
+<meta name="description" content="Perto é um app de Android para conversar sem internet, de celular para celular, usando Bluetooth. Código aberto (GPL-3.0), baseado no bitchat.">
+<meta property="og:title" content="Perto · chat sem internet por Bluetooth">
+<meta property="og:description" content="Converse com quem está perto, sem internet e sem sinal de celular. As mensagens pulam de um celular para o outro por Bluetooth.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Crect width='108' height='108' rx='24' fill='%233C3489'/%3E%3Cpath d='M42 32H66A12 12 0 0 1 78 44V56A12 12 0 0 1 66 68H49L38 77L40.5 67.3A12 12 0 0 1 30 56V44A12 12 0 0 1 42 32Z' fill='%23F7F6FE'/%3E%3Ccircle cx='54' cy='54' r='4.5' fill='%23EF9F27'/%3E%3C/svg%3E">
+<style>
+:root{
+  --roxo-900:#26215C;--roxo-800:#3C3489;--roxo-600:#534AB7;--roxo-400:#7F77DD;--roxo-200:#AFA9EC;--roxo-100:#CECBF6;--roxo-50:#EEEDFE;
+  --laranja:#EF9F27;--laranja-escuro:#412402;--verde:#9FE1CB;
+  --bg:#F7F6FE;--card:#FFFFFF;--texto:#26215C;--texto-2:#534AB7;--borda:#DEDCF8;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#13112E;--card:#1F1B4A;--texto:#EEEDFE;--texto-2:#AFA9EC;--borda:#2E2866;
+}}
+:root[data-theme="dark"]{--bg:#13112E;--card:#1F1B4A;--texto:#EEEDFE;--texto-2:#AFA9EC;--borda:#2E2866}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--texto);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header.topo{background:var(--roxo-800);color:#fff}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.marca{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;text-decoration:none}
+.marca svg{width:30px;height:30px}
+.nav nav{display:flex;gap:18px;font-size:15px}
+.nav nav a{text-decoration:none;opacity:.85}
+.nav nav a:hover{opacity:1}
+.hero{background:var(--roxo-800);color:#fff;padding:40px 0 64px;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(32px,5.5vw,52px);line-height:1.1;letter-spacing:-.5px;margin-bottom:16px}
+.hero h1 span{color:var(--laranja)}
+.hero p.lead{font-size:18px;color:var(--roxo-100);max-width:520px;margin-bottom:28px}
+.botoes{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;border:2px solid transparent}
+.btn.principal{background:var(--laranja);color:var(--laranja-escuro)}
+.btn.principal:hover{filter:brightness(1.07)}
+.btn.contorno{border-color:rgba(255,255,255,.35);color:#fff}
+.btn.contorno:hover{border-color:#fff}
+.btn svg{width:20px;height:20px}
+.nota{font-size:13px;color:var(--roxo-200);margin-top:12px}
+.radar{position:relative;width:min(340px,80vw);aspect-ratio:1;margin:0 auto}
+.radar .anel{position:absolute;border-radius:50%;border:1.5px solid var(--roxo-400);left:50%;top:50%;transform:translate(-50%,-50%)}
+.radar .varre{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(239,159,39,.35),rgba(239,159,39,0) 65deg,transparent 360deg);animation:gira 4s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.radar .varre{animation:none}}
+.radar .eu{position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:var(--laranja);box-shadow:0 0 0 8px rgba(239,159,39,.25)}
+.radar .p{position:absolute;width:44px;height:44px;margin:-22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+section{padding:64px 0}
+h2{font-size:clamp(26px,3.6vw,34px);line-height:1.2;margin-bottom:10px;letter-spacing:-.3px}
+.sub{color:var(--texto-2);font-size:17px;max-width:620px;margin-bottom:32px}
+.grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--borda);border-radius:18px;padding:22px}
+.card .ico{width:44px;height:44px;border-radius:12px;background:var(--roxo-50);color:var(--roxo-600);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+:root[data-theme="dark"] .card .ico{background:var(--roxo-800);color:var(--roxo-100)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .card .ico{background:var(--roxo-800);color:var(--roxo-100)}}
+.card .ico svg{width:24px;height:24px}
+.card h3{font-size:17px;margin-bottom:4px}
+.card p{color:var(--texto-2);font-size:15px}
+.como{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;counter-reset:passo}
+.passo{background:var(--card);border:1px solid var(--borda);border-radius:18px;padding:22px;position:relative}
+.passo::before{counter-increment:passo;content:counter(passo);display:flex;width:34px;height:34px;border-radius:50%;background:var(--laranja);color:var(--laranja-escuro);font-weight:700;align-items:center;justify-content:center;margin-bottom:10px}
+.passo h3{font-size:17px;margin-bottom:4px}
+.passo p{color:var(--texto-2);font-size:15px}
+.demo{background:var(--roxo-900);color:#fff}
+.demo .sub{color:var(--roxo-200)}
+.demo-frame{width:100%;height:820px;border:0;border-radius:24px;background:var(--roxo-900);display:block}
+@media (max-width:700px){.demo-frame{height:760px;border-radius:0}.demo .wrap{padding:0}.demo h2,.demo .sub{padding:0 20px}}
+.faq details{background:var(--card);border:1px solid var(--borda);border-radius:14px;padding:16px 18px;margin-bottom:10px}
+.faq summary{cursor:pointer;font-weight:600;font-size:16px}
+.faq details p{color:var(--texto-2);margin-top:8px;font-size:15px}
+footer{border-top:1px solid var(--borda);padding:28px 0;color:var(--texto-2);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}
+@media (max-width:800px){
+  .hero .wrap{grid-template-columns:1fr}
+  .radar{width:min(280px,76vw)}
+  .nav nav a.opc{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="wrap nav">
+    <a class="marca" href="#">
+      <svg viewBox="0 0 108 108" aria-hidden="true"><rect width="108" height="108" rx="26" fill="#534AB7"/><path d="M42 32H66A12 12 0 0 1 78 44V56A12 12 0 0 1 66 68H49L38 77L40.5 67.3A12 12 0 0 1 30 56V44A12 12 0 0 1 42 32Z" fill="#F7F6FE"/><path d="M46.2 48.5A9 9 0 0 1 61.8 48.5M41.9 46A14 14 0 0 1 66.1 46" stroke="#7F77DD" stroke-width="2.8" stroke-linecap="round" fill="none"/><circle cx="54" cy="54" r="4.5" fill="#EF9F27"/></svg>
+      Perto
+    </a>
+    <nav>
+      <a class="opc" href="#recursos">Recursos</a>
+      <a class="opc" href="#demo">Testar</a>
+      <a href="#baixar">Baixar</a>
+      <a href="https://github.com/kathiusciafolle/perto">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>Converse com quem está <span>perto</span>. Sem internet.</h1>
+      <p class="lead">O Perto manda mensagens de celular para celular por Bluetooth. Funciona em show, festa, trilha, viagem ou em qualquer lugar sem sinal, e a mensagem pula de um aparelho para o outro até chegar em quem está mais longe.</p>
+      <div class="botoes">
+        <a class="btn principal" href="https://github.com/kathiusciafolle/perto/releases/latest/download/Perto.apk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Baixar para Android
+        </a>
+        <a class="btn contorno" href="#demo">Testar no navegador</a>
+      </div>
+      <p class="nota">Versão de teste · Android 8 ou mais novo · grátis e de código aberto</p>
+    </div>
+    <div class="radar" aria-hidden="true">
+      <div class="anel" style="width:100%;height:100%"></div>
+      <div class="anel" style="width:66%;height:66%;border-color:#AFA9EC"></div>
+      <div class="anel" style="width:33%;height:33%;border-color:#CECBF6"></div>
+      <div class="varre"></div>
+      <div class="eu"></div>
+      <div class="p" style="left:70%;top:28%;background:#9FE1CB;color:#04342C">AN</div>
+      <div class="p" style="left:24%;top:24%;background:#FAC775;color:#412402">BI</div>
+      <div class="p" style="left:26%;top:76%;background:#F5C4B3;color:#4A1B0C">LE</div>
+      <div class="p" style="left:82%;top:66%;background:#CECBF6;color:#26215C">MA</div>
+    </div>
+  </div>
+</section>
+
+<section id="recursos">
+  <div class="wrap">
+    <h2>Feito para quando a internet some</h2>
+    <p class="sub">Tudo o que você espera de um app de mensagens, mais o que só dá pra fazer com Bluetooth.</p>
+    <div class="grade">
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></div>
+        <h3>Conversas privadas</h3>
+        <p>Lista de conversas com foto, horário e mensagens não lidas. Tudo criptografado de ponta a ponta.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div>
+        <h3>Radar de quem está perto</h3>
+        <p>Veja no radar quem tem o Perto no alcance do Bluetooth. Quem está mais perto aparece mais no centro.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.1 7-12a7 7 0 0 0-14 0c0 5.9 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+        <h3>Quente ou frio</h3>
+        <p>Perdeu alguém no meio da multidão? O celular vibra mais rápido conforme você chega perto da pessoa.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></div>
+        <h3>Alerta urgente</h3>
+        <p>"Me perdi" ou "Preciso de ajuda": um toque e todo mundo no alcance recebe com vibração forte.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z"/></svg></div>
+        <h3>Amigos fixos</h3>
+        <p>Fixe sua turma no topo da lista e receba um aviso quando alguém dela chegar perto.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h5"/></svg></div>
+        <h3>Mural do lugar</h3>
+        <p>Um canal aberto pra todo mundo ali, que pode mostrar só as últimas horas. As mais antigas somem da tela sozinhas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo" class="demo">
+  <div class="wrap">
+    <h2>Teste a interface aqui mesmo</h2>
+    <p class="sub">Um protótipo clicável, com pessoas de exemplo. Troque de aba, abra conversas e mande mensagens. No app de verdade, quem aparece são as pessoas reais por perto.</p>
+    <iframe class="demo-frame" src="prototipo.html" title="Protótipo clicável do Perto" loading="lazy"></iframe>
+  </div>
+</section>
+
+<section id="baixar">
+  <div class="wrap">
+    <h2>Como instalar</h2>
+    <p class="sub">O Perto ainda não está na Play Store. Por enquanto, a instalação é pelo arquivo APK.</p>
+    <div class="como">
+      <div class="passo"><h3>Baixe o APK</h3><p>No celular Android, toque em <a href="https://github.com/kathiusciafolle/perto/releases/latest/download/Perto.apk"><strong>Baixar para Android</strong></a>.</p></div>
+      <div class="passo"><h3>Abra o arquivo</h3><p>Abra o Perto.apk pela notificação do download ou pela pasta Download. Se o Android pedir, permita instalar apps desta fonte.</p></div>
+      <div class="passo"><h3>Aceite as permissões</h3><p>Bluetooth, dispositivos próximos e localização. O Android exige a localização para usar o Bluetooth, mas o Perto não rastreia onde você está.</p></div>
+      <div class="passo"><h3>Chame alguém</h3><p>O Perto precisa de pelo menos dois celulares com o app. Mande o APK pra um amigo e abram o radar juntos.</p></div>
+    </div>
+    <p class="sub" style="margin-top:22px;font-size:15px">Todas as versões ficam na página de <a href="https://github.com/kathiusciafolle/perto/releases">releases do GitHub</a>.</p>
+  </div>
+</section>
+
+<section class="faq">
+  <div class="wrap">
+    <h2>Perguntas frequentes</h2>
+    <details><summary>Precisa de internet ou chip?</summary><p>Não. Tudo passa por Bluetooth, direto entre os celulares. Não há servidor no meio.</p></details>
+    <details><summary>Qual é o alcance?</summary><p>De celular para celular, normalmente de 10 a 100 metros, dependendo de paredes e de quantas pessoas estão no caminho. Como a mensagem pula de um aparelho para o outro, quanto mais gente com o Perto, mais longe ela chega.</p></details>
+    <details><summary>Funciona no iPhone?</summary><p>Por enquanto o Perto é só para Android.</p></details>
+    <details><summary>As mensagens são seguras?</summary><p>As conversas privadas são criptografadas de ponta a ponta, com a mesma criptografia do bitchat. O Mural é aberto: qualquer pessoa no alcance lê.</p></details>
+    <details><summary>Por que o Android avisa que o app é desconhecido?</summary><p>Porque ele não vem da Play Store. Esta é uma versão de teste, assinada só para desenvolvimento. O código completo está aberto no GitHub para quem quiser conferir.</p></details>
+    <details><summary>De onde vem o Perto?</summary><p>O Perto é baseado no <a href="https://github.com/permissionlesstech/bitchat-android">bitchat para Android</a>, que faz a rede Bluetooth e a criptografia. O Perto troca a interface e acrescenta o radar, o quente ou frio, os alertas e os amigos fixos. Assim como o bitchat, é distribuído sob a licença GPL-3.0.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Perto · código aberto sob a <a href="https://github.com/kathiusciafolle/perto/blob/main/LICENSE.md">GPL-3.0</a></span>
+    <span>Baseado no <a href="https://github.com/permissionlesstech/bitchat-android">bitchat</a> · <a href="https://github.com/kathiusciafolle/perto">código no GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

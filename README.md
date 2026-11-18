@@ -3,6 +3,10 @@
 Chat que funciona **sem internet**, de celular para celular, usando **Bluetooth**.
 As mensagens pulam de um aparelho para outro até chegar em quem está mais longe.
 
+**[Site do Perto](https://kathiusciafolle.github.io/perto/)** ·
+**[Baixar o APK](https://github.com/kathiusciafolle/perto/releases/latest/download/Perto.apk)** ·
+[Todas as versões](https://github.com/kathiusciafolle/perto/releases)
+
 O Perto é baseado no [bitchat para Android](https://github.com/permissionlesstech/bitchat-android).
 A rede Bluetooth, a criptografia e o envio das mensagens são os do bitchat. O Perto troca a
 interface por uma mais familiar, com cara de app de mensagens, e acrescenta alguns recursos.
@@ -31,6 +35,7 @@ interface por uma mais familiar, com cara de app de mensagens, e acrescenta algu
 | `android/app/src/main/java/com/bitchat/android/ui/PertoHome.kt` | Telas novas do Perto (abas, radar, achar, alerta, configurações) |
 | `android/app/src/main/java/com/bitchat/android/ui/PertoPrefs.kt` | Preferências do Perto (tema e tempo do Mural) |
 | `prototipo.html` | Protótipo clicável da interface, para abrir no navegador |
+| `docs/` | Site do Perto (GitHub Pages) |
 | `build-e-instala.ps1` | Compila e instala nos celulares ligados no cabo (Windows) |
 | `testar.ps1` | Roda os testes automáticos e o lint |
 

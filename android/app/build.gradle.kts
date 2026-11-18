@@ -37,8 +37,9 @@ android {
         applicationId = "app.perto.android"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 42
-        versionName = "2.2.0"
+        // Perto: numeração própria (o versionCode só pode subir, por isso continua do 42 do bitchat)
+        versionCode = 43
+        versionName = "0.1.0"
         buildConfigField(
             "String",
             "GITHUB_RELEASE_CERT_SHA256",
