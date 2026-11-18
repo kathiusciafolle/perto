@@ -38,14 +38,40 @@ git switch -q -c $branch
 
 $patch = Join-Path $PSScriptRoot '.tmp\bitchat.patch'
 New-Item -ItemType Directory -Force (Split-Path $patch) | Out-Null
-git diff --binary "$base" "$novo" | Out-File -FilePath $patch -Encoding ascii
-git apply --3way --whitespace=nowarn --directory=android $patch
-$conflitos = git diff --name-only --diff-filter=U
-if ($LASTEXITCODE -ne 0 -and -not $conflitos) {
-    Write-Host 'O git nao conseguiu aplicar as mudancas.'
-    git reset -q --hard; git switch -q main; git branch -q -D $branch
-    Sair 'ERRO'
+
+# Arquivo por arquivo:
+# - se o Perto NAO mexeu no arquivo (igual a base, ignorando quebra de linha Windows/Linux),
+#   pega direto a versao nova do bitchat;
+# - se o Perto mexeu, tenta juntar as duas mudancas (merge de 3 vias) e avisa se der conflito.
+$conflitos = @(); $mesclados = @(); $copiados = 0
+foreach ($linha in (git diff --name-status --no-renames "$base" "$novo")) {
+    $st, $p = $linha -split "`t", 2
+    $nosso = "android/$p"
+    $temNosso = [bool](git ls-tree HEAD -- $nosso)
+    $intocado = $false
+    if ($st -ne 'A' -and $temNosso) {
+        git diff --quiet --ignore-cr-at-eol "${base}:$p" "HEAD:$nosso"
+        $intocado = ($LASTEXITCODE -eq 0)
+    }
+    if ($st -eq 'D') {
+        if ($intocado) { git rm -q -- $nosso; $copiados++ }
+        elseif ($temNosso) { $conflitos += "$nosso (apagado no bitchat, mas alterado no Perto)" }
+        continue
+    }
+    if ($st -eq 'A' -or $intocado -or -not $temNosso) {
+        $partes = ((git ls-tree $novo -- $p) -split "`t")[0] -split ' '
+        git update-index --add --cacheinfo "$($partes[0]),$($partes[2]),$nosso"
+        git checkout -- $nosso
+        $copiados++
+    } else {
+        git diff --binary --output=$patch "$base" "$novo" -- $p
+        git apply --3way --whitespace=nowarn --directory=android $patch 2>$null
+        if ($LASTEXITCODE -ne 0 -or (git diff --name-only --diff-filter=U -- $nosso)) { $conflitos += $nosso }
+        else { $mesclados += $nosso }
+    }
 }
+Write-Host "== $copiados arquivo(s) atualizados direto do bitchat (o Perto nao tinha mexido neles)."
+if ($mesclados) { Write-Host '== Juntados com as mudancas do Perto:'; $mesclados | ForEach-Object { Write-Host "   $_" } }
 Set-Content -Path (Join-Path $PSScriptRoot 'BASE-BITCHAT.txt') -Value $novo -Encoding ascii
 if ($conflitos) {
     Write-Host "== CONFLITOS (o Perto e o bitchat mexeram no mesmo trecho) no branch ${branch}:"
