@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Perto: balão de conversa com sinal de radar e ponto laranja (você) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:viewportWidth="108"
+    android:viewportHeight="108"
+    android:width="108dp"
+    android:height="108dp">
+    <!-- balão -->
+    <path
+        android:pathData="M42,32H66A12,12 0,0 1,78 44V56A12,12 0,0 1,66 68H49L38,77L40.5,67.3A12,12 0,0 1,30 56V44A12,12 0,0 1,42 32Z"
+        android:fillColor="#F7F6FE" />
+    <!-- ondas do radar -->
+    <path
+        android:pathData="M46.21,48.5A9,9 0,0 1,61.79 48.5"
+        android:strokeColor="#7F77DD"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M41.88,46A14,14 0,0 1,66.12 46"
+        android:strokeColor="#534AB7"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+    <!-- você (ponto laranja) -->
+    <path
+        android:pathData="M49.5,54a4.5,4.5 0,1 0,9 0a4.5,4.5 0,1 0,-9 0Z"
+        android:fillColor="#EF9F27" />
+</vector>

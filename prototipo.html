@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perto protótipo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --roxo-900:#26215C;--roxo-800:#3C3489;--roxo-600:#534AB7;--roxo-400:#7F77DD;--roxo-200:#AFA9EC;--roxo-100:#CECBF6;--roxo-50:#EEEDFE;--roxo-0:#F7F6FE;
+  --laranja:#EF9F27;--laranja-escuro:#412402;--laranja-medio:#BA7517;
+  --pagina:#E9E8F3;--texto-pagina:#3C3489;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--pagina:#121024;--texto-pagina:#AFA9EC}}
+:root[data-theme="dark"]{--pagina:#121024;--texto-pagina:#AFA9EC}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--pagina);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;align-items:center;justify-content:center;gap:28px;padding:16px;color:var(--roxo-900)}
+.aviso{max-width:240px;color:var(--texto-pagina);font-size:14px;line-height:1.6}
+.aviso b{font-weight:600;display:block;font-size:18px;margin-bottom:6px}
+.celular{width:380px;height:780px;max-height:calc(100vh - 32px);border-radius:36px;background:#000;padding:10px;flex:none}
+.tela{width:100%;height:100%;border-radius:28px;overflow:hidden;position:relative;background:var(--roxo-0)}
+@media (max-width:700px){
+  body{padding:0}.aviso{display:none}
+  .celular{width:100%;height:100%;max-height:none;border-radius:0;padding:0}
+  .tela{border-radius:0}
+}
+.view{position:absolute;inset:0;display:flex;flex-direction:column}
+.hidden{display:none!important}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.topo{background:var(--roxo-800);color:var(--roxo-50);padding:18px 16px 0;flex:none}
+.topo-linha{display:flex;align-items:center;justify-content:space-between}
+.marca{font-size:21px;font-weight:600;letter-spacing:.2px}
+.icones{display:flex;gap:4px}
+.icones button{width:36px;height:36px;border-radius:50%;font-size:20px;display:flex;align-items:center;justify-content:center}
+.icones button:hover{background:var(--roxo-600)}
+.bt-on{color:#9FE1CB}
+.abas{display:flex;margin-top:10px}
+.aba{flex:1;padding:10px 0 11px;font-size:14px;font-weight:500;color:var(--roxo-200);border-bottom:3px solid transparent}
+.aba.on{color:#fff;border-bottom-color:var(--laranja)}
+.conteudo{flex:1;overflow-y:auto;position:relative}
+.linha{display:flex;gap:12px;align-items:center;padding:11px 16px;width:100%;text-align:left}
+.linha:hover{background:var(--roxo-50)}
+.av{width:46px;height:46px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px}
+.info{flex:1;min-width:0;border-bottom:1px solid var(--roxo-100);padding-bottom:11px;margin-bottom:-11px}
+.l1,.l2{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nome{font-weight:600;font-size:15px}
+.hora{font-size:12px;color:#888780}
+.hora.nova{color:var(--laranja-medio);font-weight:600}
+.prev{font-size:13.5px;color:var(--roxo-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.badge{background:var(--laranja);color:var(--laranja-escuro);border-radius:11px;font-size:12px;font-weight:600;min-width:21px;height:21px;padding:0 6px;display:flex;align-items:center;justify-content:center}
+.fab{position:absolute;right:16px;bottom:18px;width:56px;height:56px;border-radius:18px;background:var(--laranja);color:var(--laranja-escuro);font-size:24px;display:flex;align-items:center;justify-content:center}
+/* radar */
+.radar-view{background:var(--roxo-900);color:var(--roxo-50);min-height:100%;padding-bottom:16px}
+.radar{position:relative;width:280px;height:280px;margin:18px auto 6px}
+.anel{position:absolute;border-radius:50%;border:1px solid var(--roxo-600);left:50%;top:50%;transform:translate(-50%,-50%)}
+.varredura{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(239,159,39,.28),rgba(239,159,39,0) 70deg,transparent 360deg);animation:gira 4s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.eu{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px;border-radius:50%;background:var(--laranja);box-shadow:0 0 0 6px rgba(239,159,39,.25)}
+.ponto{position:absolute;width:38px;height:38px;margin:-19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;transition:transform .15s}
+.ponto:hover{transform:scale(1.12)}
+.legenda{text-align:center;color:var(--roxo-200);font-size:13px;margin-bottom:12px}
+.cartao{display:flex;align-items:center;gap:10px;background:var(--roxo-800);border-radius:14px;padding:10px 12px;margin:0 16px 8px;width:calc(100% - 32px);text-align:left}
+.cartao:hover{background:var(--roxo-600)}
+.cartao .av{width:34px;height:34px;font-size:12px}
+.dist{margin-left:auto;font-size:12.5px}
+/* conversa */
+.chat-topo{background:var(--roxo-800);color:var(--roxo-50);display:flex;align-items:center;gap:8px;padding:14px 8px 12px;flex:none}
+.chat-topo .av{width:38px;height:38px;font-size:13px}
+.sub{font-size:12px;color:var(--roxo-200);margin-top:1px}
+.msgs{flex:1;overflow-y:auto;padding:12px 12px 6px;display:flex;flex-direction:column;gap:6px;background:var(--roxo-50)}
+.dia{align-self:center;font-size:12px;background:var(--roxo-100);color:var(--roxo-800);padding:3px 10px;border-radius:8px;margin:4px 0}
+.bolha{max-width:80%;padding:8px 11px 6px;border-radius:16px;font-size:14.5px;line-height:1.4;background:#fff;align-self:flex-start;border-bottom-left-radius:5px;word-wrap:break-word}
+.bolha.eu-msg{background:var(--roxo-600);color:#fff;align-self:flex-end;border-bottom-left-radius:16px;border-bottom-right-radius:5px}
+.bolha .autor{font-size:12px;font-weight:600;margin-bottom:2px}
+.meta{font-size:11px;opacity:.7;float:right;margin:6px 0 0 10px;display:flex;gap:3px;align-items:center}
+.lido{color:#9FE1CB;opacity:1}
+.digitando{align-self:flex-start;font-size:12.5px;color:var(--roxo-600);font-style:italic;padding:2px 6px}
+.seguro{align-self:center;font-size:12px;color:var(--roxo-400);margin:6px 0 2px;text-align:center}
+.barra{display:flex;gap:8px;padding:8px 10px 12px;align-items:center;background:var(--roxo-50);flex:none}
+.campo{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border-radius:24px;padding:4px 6px 4px 12px}
+.campo i{font-size:21px;color:#888780}
+.campo input{flex:1;border:0;outline:0;font:inherit;font-size:15px;padding:8px 0;background:transparent;color:var(--roxo-900);min-width:0}
+.enviar{width:46px;height:46px;border-radius:50%;background:var(--roxo-600);color:#fff;font-size:21px;display:flex;align-items:center;justify-content:center;flex:none}
+.enviar:active{transform:scale(.94)}
+.voltar{width:38px;height:38px;border-radius:50%;font-size:21px;display:flex;align-items:center;justify-content:center}
+.voltar:hover{background:var(--roxo-600)}
+.vazio{padding:40px 24px;text-align:center;color:var(--roxo-600);font-size:14px;line-height:1.6}
+.toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:var(--roxo-900);color:#fff;font-size:13px;padding:8px 14px;border-radius:10px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="aviso">
+  <b>Perto, protótipo</b>
+  Só a interface, pra testar o visual. Clique nas conversas, troque de aba, mande mensagens e toque nas pessoas do radar. Ainda não usa Bluetooth de verdade.
+</div>
+
+<div class="celular"><div class="tela">
+
+  <section class="view" id="home">
+    <header class="topo">
+      <div class="topo-linha">
+        <span class="marca">Perto</span>
+        <div class="icones">
+          <button class="bt-on" aria-label="Bluetooth ligado" onclick="toast('Bluetooth ligado · procurando pessoas')"><i class="ti ti-bluetooth"></i></button>
+          <button aria-label="Buscar" onclick="toast('Busca ainda não funciona no protótipo')"><i class="ti ti-search"></i></button>
+          <button aria-label="Mais opções" onclick="toast('Configurações em breve')"><i class="ti ti-dots-vertical"></i></button>
+        </div>
+      </div>
+      <nav class="abas">
+        <button class="aba on" data-aba="conversas">Conversas</button>
+        <button class="aba" data-aba="perto">Perto</button>
+        <button class="aba" data-aba="mural">Mural</button>
+      </nav>
+    </header>
+    <div class="conteudo" id="conteudo"></div>
+    <button class="fab" id="fab" aria-label="Nova conversa"><i class="ti ti-message-plus"></i></button>
+  </section>
+
+  <section class="view hidden" id="chat">
+    <header class="chat-topo">
+      <button class="voltar" id="voltar" aria-label="Voltar"><i class="ti ti-arrow-left"></i></button>
+      <div class="av" id="chat-av"></div>
+      <div style="flex:1;min-width:0">
+        <div class="nome" id="chat-nome"></div>
+        <div class="sub" id="chat-sub"></div>
+      </div>
+      <button class="voltar" aria-label="Mais opções" onclick="toast('Opções da conversa em breve')"><i class="ti ti-dots-vertical"></i></button>
+    </header>
+    <div class="msgs" id="msgs"></div>
+    <form class="barra" id="form">
+      <div class="campo">
+        <i class="ti ti-mood-smile"></i>
+        <input id="texto" placeholder="Mensagem" autocomplete="off">
+        <button type="button" aria-label="Anexar" onclick="toast('Anexos em breve')"><i class="ti ti-paperclip"></i></button>
+      </div>
+      <button class="enviar" id="enviar" aria-label="Gravar áudio"><i class="ti ti-microphone"></i></button>
+    </form>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</div></div>
+
+<script>
+const pessoas = [
+  {id:'ana', nome:'Ana', ini:'AN', bg:'#9FE1CB', fg:'#04342C', dist:'perto · 8 m', cor:'#9FE1CB', como:'direto', x:.66, y:.30,
+   naoLidas:2, msgs:[{eu:false,t:'oi! cadê você?',h:'14:28'},{eu:true,t:'perto do palco',h:'14:29',st:'lido'},{eu:false,t:'to chegando na praça',h:'14:32'},{eu:false,t:'me espera aí',h:'14:32'}],
+   respostas:['já te vi!','to indo','kkkk','me manda onde tá']},
+  {id:'leo', nome:'Leo', ini:'LE', bg:'#F5C4B3', fg:'#4A1B0C', dist:'longe · via Bia', cor:'#F0997B', como:'via Bia', x:.24, y:.78,
+   naoLidas:0, msgs:[{eu:false,t:'vai no show hoje?',h:'13:50'},{eu:true,t:'vou sim',h:'14:05',st:'lido'},{eu:false,t:'beleza, te vejo lá',h:'14:10'}],
+   respostas:['fechou','tô meio longe ainda','chego em 10 min']},
+  {id:'bia', nome:'Bia', ini:'BI', bg:'#FAC775', fg:'#412402', dist:'médio · 25 m', cor:'#FAC775', como:'direto', x:.30, y:.22,
+   naoLidas:0, msgs:[{eu:false,t:'alguém tem água?',h:'13:58'}],
+   respostas:['valeuu','to perto da barraca de lanche','vem cá']},
+  {id:'mari', nome:'Mari', ini:'MA', bg:'#CECBF6', fg:'#26215C', dist:'fora do alcance', cor:'#888780', como:'fora do alcance', x:null,
+   naoLidas:0, msgs:[{eu:false,t:'Áudio 0:12',h:'ontem',audio:true}], respostas:[]},
+];
+const desconhecido = {id:'?', nome:'Alguém perto', ini:'?', bg:'#5F5E5A', fg:'#D3D1C7', dist:'perto · 12 m', cor:'#9FE1CB', como:'direto', x:.80, y:.66, naoLidas:0, msgs:[], respostas:['oi! quem é?','opa','tudo bem?'], novo:true};
+const mural = [
+  {de:'Bia', cor:'#BA7517', t:'alguém tem água?', h:'13:58'},
+  {de:'Alguém perto', cor:'#5F5E5A', t:'fila do banheiro tá enorme, vai no da esquerda', h:'14:02'},
+  {de:'Ana', cor:'#0F6E56', t:'show começa 15h!', h:'14:20'},
+];
+let aba = 'conversas', atual = null;
+const $ = id => document.getElementById(id);
+const agora = () => new Date().toTimeString().slice(0,5);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1800)}
+
+function trocaAba(a){
+  aba=a;
+  document.querySelectorAll('.aba').forEach(b=>b.classList.toggle('on',b.dataset.aba===a));
+  $('fab').classList.toggle('hidden',a!=='conversas');
+  render();
+}
+document.querySelectorAll('.aba').forEach(b=>b.onclick=()=>trocaAba(b.dataset.aba));
+$('fab').onclick=()=>{trocaAba('perto');toast('Escolha alguém no radar')};
+
+function render(){
+  const c=$('conteudo');
+  if(aba==='conversas'){
+    const lista=[...pessoas, ...(desconhecido.msgs.length?[desconhecido]:[])];
+    c.innerHTML=lista.map(p=>{
+      const u=p.msgs[p.msgs.length-1];
+      const prev=u?(u.audio?'<i class="ti ti-microphone"></i> '+esc(u.t):(u.eu?'<i class="ti ti-checks"></i> ':'')+esc(u.t)):'';
+      return `<button class="linha" data-id="${p.id}">
+        <div class="av" style="background:${p.bg};color:${p.fg}">${p.ini}</div>
+        <div class="info">
+          <div class="l1"><span class="nome">${p.nome}</span><span class="hora ${p.naoLidas?'nova':''}">${u?u.h:''}</span></div>
+          <div class="l2"><span class="prev">${prev}</span>${p.naoLidas?`<span class="badge">${p.naoLidas}</span>`:''}</div>
+        </div></button>`}).join('');
+  } else if(aba==='perto'){
+    const noRadar=[...pessoas.filter(p=>p.x!==null), desconhecido];
+    c.innerHTML=`<div class="radar-view">
+      <div class="radar">
+        <div class="anel" style="width:280px;height:280px"></div>
+        <div class="anel" style="width:190px;height:190px;border-color:#7F77DD"></div>
+        <div class="anel" style="width:100px;height:100px;border-color:#AFA9EC"></div>
+        <div class="varredura"></div>
+        <div class="eu" title="Você"></div>
+        ${noRadar.map(p=>`<button class="ponto" data-id="${p.id}" style="left:${p.x*100}%;top:${p.y*100}%;background:${p.bg};color:${p.fg}" aria-label="${p.nome}">${p.ini}</button>`).join('')}
+      </div>
+      <div class="legenda">${noRadar.length} pessoas no alcance · toque pra conversar</div>
+      ${noRadar.map(p=>`<button class="cartao" data-id="${p.id}"><div class="av" style="background:${p.bg};color:${p.fg}">${p.ini}</div><span>${p.nome}</span><span class="dist" style="color:${p.cor}">${p.dist}</span></button>`).join('')}
+    </div>`;
+  } else {
+    c.innerHTML=`<div class="msgs" style="min-height:calc(100% - 66px)">
+      <div class="seguro"><i class="ti ti-broadcast"></i> Mural aberto: todo mundo no alcance vê</div>
+      ${mural.map(m=>m.eu?`<div class="bolha eu-msg">${esc(m.t)}<span class="meta">${m.h}</span></div>`
+        :`<div class="bolha"><div class="autor" style="color:${m.cor}">${m.de}</div>${esc(m.t)}<span class="meta">${m.h}</span></div>`).join('')}
+    </div>`;
+    c.insertAdjacentHTML('beforeend',`<form class="barra" id="form-mural" style="position:sticky;bottom:0">
+      <div class="campo"><i class="ti ti-broadcast"></i><input id="texto-mural" placeholder="Escrever no mural" autocomplete="off"></div>
+      <button class="enviar" aria-label="Enviar"><i class="ti ti-send"></i></button></form>`);
+    $('form-mural').onsubmit=e=>{e.preventDefault();const v=$('texto-mural').value.trim();if(!v)return;mural.push({eu:true,t:v,h:agora()});render();$('texto-mural').focus()};
+    c.scrollTop=c.scrollHeight;
+  }
+  c.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>abrir(b.dataset.id));
+}
+
+function acha(id){return id==='?'?desconhecido:pessoas.find(p=>p.id===id)}
+
+function abrir(id){
+  atual=acha(id); atual.naoLidas=0;
+  $('chat-av').textContent=atual.ini;
+  $('chat-av').style.background=atual.bg; $('chat-av').style.color=atual.fg;
+  $('chat-nome').textContent=atual.nome;
+  const icone=atual.como==='fora do alcance'?'ti-antenna-bars-off':'ti-antenna-bars-5';
+  $('chat-sub').innerHTML=`<i class="ti ${icone}"></i> ${atual.dist.replace(' · ',' · a ')}`;
+  if(atual.como==='fora do alcance') $('chat-sub').innerHTML=`<i class="ti ${icone}"></i> fora do alcance · entrega quando aparecer`;
+  $('home').classList.add('hidden'); $('chat').classList.remove('hidden');
+  renderChat(); $('texto').value=''; atualizaBotao();
+}
+$('voltar').onclick=()=>{$('chat').classList.add('hidden');$('home').classList.remove('hidden');atual=null;render()};
+
+function renderChat(digitando){
+  const m=$('msgs');
+  m.innerHTML=`<div class="dia">Hoje</div>`+atual.msgs.map(x=>{
+    if(x.audio) return `<div class="bolha" style="display:flex;align-items:center;gap:8px;min-width:170px"><i class="ti ti-player-play" style="color:#534AB7;font-size:18px"></i><span style="flex:1;height:3px;background:#AFA9EC;border-radius:2px"></span><span style="font-size:12px">0:12</span></div>`;
+    const st=x.eu?(x.st==='lido'?'<i class="ti ti-checks lido"></i>':x.st==='entregue'?'<i class="ti ti-checks"></i>':'<i class="ti ti-check"></i>'):'';
+    return `<div class="bolha ${x.eu?'eu-msg':''}">${esc(x.t)}<span class="meta">${x.h} ${st}</span></div>`}).join('')
+    +(digitando?`<div class="digitando">${atual.nome} está digitando…</div>`:'')
+    +`<div class="seguro"><i class="ti ti-lock"></i> Criptografado de ponta a ponta, sem internet</div>`;
+  m.scrollTop=m.scrollHeight;
+}
+
+function atualizaBotao(){
+  const tem=$('texto').value.trim().length>0;
+  $('enviar').innerHTML=`<i class="ti ${tem?'ti-send':'ti-microphone'}"></i>`;
+  $('enviar').setAttribute('aria-label',tem?'Enviar':'Gravar áudio');
+}
+$('texto').oninput=atualizaBotao;
+
+$('form').onsubmit=e=>{
+  e.preventDefault();
+  const v=$('texto').value.trim();
+  if(!v){toast('Segure pra gravar áudio (em breve)');return}
+  const p=atual, msg={eu:true,t:v,h:agora(),st:'enviada'};
+  p.msgs.push(msg); $('texto').value=''; atualizaBotao(); renderChat(); $('texto').focus();
+  if(p.como==='fora do alcance'){toast('Guardada. Vai quando a Mari aparecer');return}
+  setTimeout(()=>{msg.st='entregue'; if(atual===p) renderChat()},700);
+  setTimeout(()=>{msg.st='lido'; if(atual===p) renderChat(true)},1400);
+  setTimeout(()=>{
+    const r=p.respostas[Math.floor(Math.random()*p.respostas.length)];
+    p.msgs.push({eu:false,t:r,h:agora()});
+    if(atual===p) renderChat(); else p.naoLidas++;
+  },2900);
+};
+
+render();
+</script>
+</body>
+</html>

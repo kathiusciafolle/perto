@@ -1,0 +1,13 @@
+# Pasta temporaria dos scripts (logs, codigo original para comparar, etc.)
+.tmp/
+
+# Arquivos de build e do Android Studio (o android/ tem o .gitignore dele tambem)
+**/build/
+.gradle/
+.idea/
+local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+*.log
