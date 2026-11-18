@@ -1,3 +1,4 @@
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -14,7 +15,9 @@ require(!(releaseUiTests && composerUiTests)) { "Select one UI test configuratio
 val githubReleaseCertSha256 = providers
     .environmentVariable("BITCHAT_GITHUB_RELEASE_CERT_SHA256")
     .orElse(providers.gradleProperty("BITCHAT_GITHUB_RELEASE_CERT_SHA256"))
-    .orElse("")
+    // Perto: impressão digital (pública) do certificado da chave de release do Perto.
+    // Faz o app confiar nos APKs oficiais do Perto ao passar o app de um celular pro outro.
+    .orElse("05d52ba27cfc225aa4152eb689ef86d62010b61f34907b3dfdd42bcdbbffbc0d")
 val normalizedGithubReleaseCertSha256 = githubReleaseCertSha256.get()
     .replace(":", "")
     .trim()
@@ -24,6 +27,16 @@ require(
         normalizedGithubReleaseCertSha256.matches(Regex("[a-f0-9]{64}"))
 ) {
     "BITCHAT_GITHUB_RELEASE_CERT_SHA256 must be a SHA-256 certificate fingerprint"
+}
+
+// Perto: a chave de assinatura da versão final fica FORA do repositório, em
+// ~/.perto/keystore.properties (ou no caminho da variável PERTO_KEYSTORE_PROPERTIES).
+// Sem esse arquivo, a versão final sai sem assinatura e a de teste continua igual.
+val pertoKeystoreProps = Properties().apply {
+    val path = System.getenv("PERTO_KEYSTORE_PROPERTIES")
+        ?: "${System.getProperty("user.home")}/.perto/keystore.properties"
+    val propsFile = file(path)
+    if (propsFile.exists()) propsFile.inputStream().use { load(it) }
 }
 
 android {
@@ -38,8 +51,8 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         // Perto: numeração própria (o versionCode só pode subir, por isso continua do 42 do bitchat)
-        versionCode = 43
-        versionName = "0.1.0"
+        versionCode = 44
+        versionName = "0.1.1"
         buildConfigField(
             "String",
             "GITHUB_RELEASE_CERT_SHA256",
@@ -69,6 +82,17 @@ android {
         sourceSets.getByName("androidTest").kotlin.directories.add("src/composerAndroidTest/java")
     }
 
+    signingConfigs {
+        if (pertoKeystoreProps.getProperty("storeFile") != null) {
+            create("perto") {
+                storeFile = file(pertoKeystoreProps.getProperty("storeFile"))
+                storePassword = pertoKeystoreProps.getProperty("storePassword")
+                keyAlias = pertoKeystoreProps.getProperty("keyAlias")
+                keyPassword = pertoKeystoreProps.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         debug {
             if (composerUiTests) applicationIdSuffix = ".composerTest"
@@ -81,6 +105,8 @@ android {
             if (releaseUiTests) {
                 signingConfig = signingConfigs.getByName("debug")
                 proguardFiles("release-instrumentation.pro")
+            } else {
+                signingConfigs.findByName("perto")?.let { signingConfig = it }
             }
             isMinifyEnabled = true
             isShrinkResources = true

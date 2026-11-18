@@ -38,6 +38,7 @@ interface por uma mais familiar, com cara de app de mensagens, e acrescenta algu
 | `docs/` | Site do Perto (GitHub Pages) |
 | `build-e-instala.ps1` | Compila e instala nos celulares ligados no cabo (Windows) |
 | `testar.ps1` | Roda os testes automáticos e o lint |
+| `versao-final.ps1` | Compila a versão final assinada e confere a assinatura |
 
 ## Como compilar
 
@@ -60,6 +61,28 @@ O APK fica em `android/app/build/outputs/apk/debug/`.
 
 Para testar a rede de verdade, são necessários **dois celulares Android** com o Perto,
 com Bluetooth ligado e as permissões aceitas.
+
+## Versão final assinada
+
+As versões publicadas são assinadas com a chave própria do Perto. A chave **não fica neste
+repositório**: o Gradle procura em `~/.perto/keystore.properties` (ou no arquivo apontado pela
+variável `PERTO_KEYSTORE_PROPERTIES`), com este formato:
+
+```properties
+storeFile=/caminho/para/perto-release.jks
+storePassword=...
+keyAlias=perto
+keyPassword=...
+```
+
+Com a chave no lugar, `& .\versao-final.ps1` compila e confere a assinatura. Sem a chave, a
+versão de teste (`assembleDebug`) continua funcionando normalmente.
+
+Impressão digital (SHA-256) do certificado oficial do Perto, para conferir um APK baixado:
+
+```
+05:D5:2B:A2:7C:FC:22:5A:A4:15:2E:B6:89:EF:86:D6:20:10:B6:1F:34:90:7B:3D:FD:D4:2B:CD:BB:FF:BC:0D
+```
 
 ## Licença
 
