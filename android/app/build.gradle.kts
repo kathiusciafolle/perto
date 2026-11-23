@@ -51,8 +51,8 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         // Perto: numeração própria (o versionCode só pode subir, por isso continua do 42 do bitchat)
-        versionCode = 45
-        versionName = "0.1.2"
+        versionCode = 46
+        versionName = "0.1.3"
         buildConfigField(
             "String",
             "GITHUB_RELEASE_CERT_SHA256",
