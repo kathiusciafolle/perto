@@ -62,6 +62,8 @@
     
     <!-- Battery optimization permission -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- Perto: abrir o instalador do Android com a versão nova baixada pelo próprio app -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     
     <!-- Hardware features -->
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />

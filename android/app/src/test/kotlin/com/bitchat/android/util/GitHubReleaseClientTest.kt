@@ -46,6 +46,25 @@ class GitHubReleaseClientTest {
     }
 
     @Test
+    fun `Perto release picks the universal Perto apk over the per-architecture ones`() {
+        val release = GitHubReleaseClient.parseRelease(
+            """
+            {
+              "tag_name": "v0.1.4",
+              "assets": [
+                { "name": "Perto-arm64.apk", "browser_download_url": "https://downloads.example/a.apk", "size": 1 },
+                { "name": "Perto.apk", "browser_download_url": "https://downloads.example/u.apk", "size": 2 },
+                { "name": "Perto-armv7.apk", "browser_download_url": "https://downloads.example/b.apk", "size": 3 }
+              ]
+            }
+            """.trimIndent()
+        )
+        assertEquals("0.1.4", release?.versionName)
+        assertEquals("https://downloads.example/u.apk", release?.universalApkUrl)
+        assertEquals(2L, release?.universalApkSize)
+    }
+
+    @Test
     fun `cached metadata is conditionally refreshed with its etag`() = runTest {
         server.enqueue(successResponse(etag = "release-v1"))
         val client = client()

@@ -36,19 +36,23 @@ internal class GitHubReleaseClient(
 ) : LatestReleaseProvider {
     companion object {
         private const val TAG = "GitHubRelease"
+        // Perto: as versões novas vêm das releases do Perto, não do bitchat.
         private const val GITHUB_API_URL =
-            "https://api.github.com/repos/permissionlesstech/bitchat-android/releases/latest"
+            "https://api.github.com/repos/kathiusciafolle/perto/releases/latest"
         private const val ROUTE_READY_TIMEOUT_MILLIS = 60_000L
         private const val CACHE_TTL_MILLIS = 30 * 60_000L
         private const val PREFS_NAME = "apk_release_metadata"
         private const val RATE_LIMIT_SCOPE = "github_release_metadata"
-        private const val USER_AGENT = "BitChat-Android"
+        private const val USER_AGENT = "Perto-Android"
+
+        /** Perto: nome do APK universal nas releases do Perto. */
+        private const val PERTO_UNIVERSAL_APK = "Perto.apk"
 
         private val SOURCE = ApkDownloadSource(
             id = DefaultApkDownloadSources.GITHUB_ID,
             displayName = "GitHub Releases",
-            latestApkUrl = "https://github.com/permissionlesstech/bitchat-android/releases/latest/" +
-                "download/bitchat-android-universal.apk"
+            latestApkUrl = "https://github.com/kathiusciafolle/perto/releases/latest/download/" +
+                PERTO_UNIVERSAL_APK
         )
 
         internal fun parseRelease(jsonString: String): Release? = runCatching {
@@ -62,7 +66,9 @@ internal class GitHubReleaseClient(
                 val asset = assets.getJSONObject(index)
                 val name = asset.optString("name")
                 val url = asset.optString("browser_download_url")
-                if (name.contains("universal", ignoreCase = true) &&
+                val universal = name.contains("universal", ignoreCase = true) ||
+                    name.equals(PERTO_UNIVERSAL_APK, ignoreCase = true)
+                if (universal &&
                     name.endsWith(".apk", ignoreCase = true) &&
                     url.startsWith("https://")
                 ) {

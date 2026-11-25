@@ -47,13 +47,9 @@ internal object DefaultApkDownloadSources {
         ApkDownloadSource(
             id = GITHUB_ID,
             displayName = "GitHub Releases",
+            // Perto: o APK universal oficial do Perto (assinado com a chave do Perto).
             latestApkUrls = listOf(
-                "https://github.com/permissionlesstech/bitchat-android/releases/latest/" +
-                    "download/bitchat-android-universal.apk",
-                // Releases published before the stable asset-name rollout use
-                // this filename. Remove when supported releases all use the primary URL.
-                "https://github.com/permissionlesstech/bitchat-android/releases/latest/" +
-                    "download/app-universal-release.apk"
+                "https://github.com/kathiusciafolle/perto/releases/latest/download/Perto.apk"
             )
         )
     )

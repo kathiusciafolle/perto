@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bitchat.android.core.ui.icon.BitChatIcon
 import com.bitchat.android.model.BitchatMessage
 import com.bitchat.android.model.BitchatMessageType
@@ -196,6 +197,10 @@ fun PertoHome(viewModel: ChatViewModel) {
     val currentChannel by viewModel.currentChannel.collectAsStateWithLifecycle()
     val myNickname by viewModel.nickname.collectAsStateWithLifecycle()
 
+    // Atualização pelo próprio app: procura versão nova ao abrir (se a pessoa deixou ligado).
+    val updateVm: PertoUpdateViewModel = viewModel()
+    LaunchedEffect(Unit) { updateVm.autoCheck() }
+
     // A barra de cima é escura: ícones da barra de status em branco.
     val view = LocalView.current
     SideEffect {
@@ -311,9 +316,12 @@ fun PertoHome(viewModel: ChatViewModel) {
     if (showSettings) {
         PertoSettingsDialog(
             viewModel = viewModel,
+            updateVm = updateVm,
             onDismiss = { showSettings = false },
         )
     }
+
+    PertoUpdateDialog(updateVm)
 
     findPeer?.let { pid ->
         AcharAmigoDialog(viewModel = viewModel, peerID = pid, onDismiss = { findPeer = null })
@@ -962,10 +970,15 @@ private fun AlertaDialog(onDismiss: () -> Unit, onSend: (String) -> Unit) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
-private fun PertoSettingsDialog(viewModel: ChatViewModel, onDismiss: () -> Unit) {
+private fun PertoSettingsDialog(
+    viewModel: ChatViewModel,
+    updateVm: PertoUpdateViewModel,
+    onDismiss: () -> Unit,
+) {
     val context = LocalContext.current
     val accent by PertoPrefs.accent.collectAsStateWithLifecycle()
     val muralHours by PertoPrefs.muralHours.collectAsStateWithLifecycle()
+    val autoUpdate by PertoPrefs.autoUpdateCheck.collectAsStateWithLifecycle()
     val themePref by ThemePreferenceManager.themeFlow.collectAsStateWithLifecycle()
     var confirmPanic by remember { mutableStateOf(false) }
 
@@ -1011,6 +1024,34 @@ private fun PertoSettingsDialog(viewModel: ChatViewModel, onDismiss: () -> Unit)
                         )
                     }
                 }
+                SettingTitle("Atualizações")
+                Text(
+                    "Você está na versão ${updateVm.currentVersion}.",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { PertoPrefs.setAutoUpdateCheck(context, !autoUpdate) }
+                        .padding(vertical = 4.dp, horizontal = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text("Avisar quando sair versão nova", fontSize = 15.sp)
+                        Text(
+                            "Quando tiver internet, o Perto confere no GitHub se saiu versão nova.",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = autoUpdate,
+                        onCheckedChange = { PertoPrefs.setAutoUpdateCheck(context, it) }
+                    )
+                }
+                SettingAction("Procurar atualização agora") { onDismiss(); updateVm.check(manual = true) }
                 SettingTitle("Segurança")
                 SettingAction("Adicionar amigo pelo QR code") { onDismiss(); viewModel.showVerificationSheet() }
                 SettingAction("Rede e pessoas conectadas") { onDismiss(); viewModel.showMeshPeerList() }
